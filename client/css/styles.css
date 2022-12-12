@@ -1,0 +1,17 @@
+body{
+    background-color: #343a40 !important; 
+}
+
+.wrapper
+{
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-style{
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #495057;
+    position: relative;
+    float: right;
+    align-items: center;
+}
