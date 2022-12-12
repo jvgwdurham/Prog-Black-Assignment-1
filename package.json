@@ -1,0 +1,24 @@
+{
+  "name": "prog-black-assignment-1",
+  "version": "1.0.0",
+  "description": "Main worksite for the first summative assessment for programming black.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jvgwdurham/Prog-Black-Assignment-1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jvgwdurham/Prog-Black-Assignment-1/issues"
+  },
+  "homepage": "https://github.com/jvgwdurham/Prog-Black-Assignment-1#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2"
+  }
+}
