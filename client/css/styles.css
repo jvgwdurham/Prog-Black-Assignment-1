@@ -1,17 +1,34 @@
-body{
-    background-color: #343a40 !important; 
-}
-
-.wrapper
-{
-    display: flex;
-    align-items: center;
-}
-
-.sidebar-style{
-    font-family: 'Courier New', Courier, monospace;
+nav{
     background-color: #495057;
-    position: relative;
-    float: right;
-    align-items: center;
+}
+
+.logo-spacing{
+    width: 41%;
+}
+.loggedInText{
+    font-weight: 300;
+}
+
+.usernameText{
+    color: aliceblue;
+}
+
+.mainContent{
+    max-width: 75%;
+}
+
+.imgBox{
+    border: 3px solid black;
+    background-color: black;
+    max-width: 256px;
+    max-height: 144px;
+    min-height: 144px;
+}
+
+.stdImg{
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    max-width: 250px;
+    max-height: 137px;
 }

@@ -1,21 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <meta lang="en-us">
-        <link href="css/bootstrap.min.css">
-        <link href="css/styles.css">
-    </head>
-    <body>
-        <div class="wrapper">
-            <nav id="sidebar">
-                <div class="sidebar-style">
-                    <h2>Test</h2>
-                </div>
-            </nav>
-            <div id="content">
 
+<head>
+    <meta lang="en-us">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <style>
+        body {
+            background-color: #343a40;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-light navbar-expand">
+        <div class="collapse navbar-collapse">
+            <div class="navbar-nav ms-2 logo-spacing">
+                <span class="md-auto navbar-text loggedInText">
+                    Logged in as:
+                    <span class="usernameText" id="username">
+                        Placeholder
+                    </span>
+                </span>
+            </div>
+            <div class="navbar-nav">
+                <a class="navbar-brand" href="#">
+                    <img class="d-inline-block align-top" src="resources/logo.png" height="30">
+                </a>
+            </div>
+            <div class="navbar-nav ms-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="">Post</a>
+                </li>
+                <li class="nav-item">
+                    <a class="navbar-brand align-middle">
+                        <img class="d-inline-block" src="resources/settings-cog.png" height="30">
+                    </a>
+                </li>
             </div>
         </div>
-        <script src="js/bootstrap.min.js"></script>
-    </body>
+    </nav>
+
+    <div class="container-fluid mainContent my-5 ps-3 mx-auto">
+         <div class="imgBox">
+            <img class="stdImg" src="resources/placeholder.png">
+         </div>
+         
+    </div>
+
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/mainClient.js"></script>
+</body>
 </html>
