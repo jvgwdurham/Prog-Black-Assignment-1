@@ -16,11 +16,11 @@
 
     <nav class="navbar navbar-light navbar-expand">
         <div class="collapse navbar-collapse">
-            <div class="navbar-nav ms-2 logo-spacing">
-                <span class="md-auto navbar-text loggedInText">
+            <div class="navbar-nav ms-2 logoSpacing">
+                <span class="navbar-text loggedInText">
                     Logged in as:
-                    <span class="usernameText" id="username">
-                        Placeholder
+                    <span class="colouredText" id="username">
+                        Not Logged In
                     </span>
                 </span>
             </div>
@@ -31,23 +31,56 @@
             </div>
             <div class="navbar-nav ms-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="">Post</a>
+                    <button class="btn btn-secondary btn-block mx-1" onclick="setupPost()">Post</button>
+                    
                 </li>
-                <li class="nav-item">
-                    <a class="navbar-brand align-middle" href="#">
-                        <img src="resources/settings-cog.png" height="30">
-                    </a>
+                <li class="nav-item active">
+                    <button class="btn btn-danger btn-block mx-1" onclick="logOut()">Log Out</button>
                 </li>
             </div>
         </div>
     </nav>
 
-    <div class="container-fluid mainContent my-5 ps-3 mx-auto">
-        
-        <div class="imgBox">
-            <img class="stdImg" src="resources/placeholder.png">
+    <div class="container-fluid my-4">
+        <div class="mainContent" id="contentGrid">
+            <div id="post1" class="postContainer text-center">
+                <div class="imgBox">
+                    <img class="stdImg" src="resources/placeholder.png">
+                </div>
+                <a href="#" onclick="loadPost(parent.id)" id="postTitle">post | R: 3</a>
+            </div>
         </div>
+    </div>
 
+    <div class="loginWindow" id="loginWindow">
+        <div class="w-75 loginFrame">
+            <img class="logoImg" src="resources/high res.png">
+            
+            <div class="form-outline mb-3">
+                <input type="username" id="usernameInput" class="form-control" placeholder="Temporary Username"/>
+            </div>
+
+            <div class="row">
+                <div class="col d-flex justify-content-center">
+                    <div class="form-check">
+                        <label class="form-check-label"> Remember me</label>
+                        <input class="form-check-input" type="checkbox" id="rememberMe"/>
+                    </div>
+                    
+                    
+                </div>
+                <button class="btn btn-primary btn-block my-2" onclick="logIn()">Enter</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="postWindow" id="postWindow">
+        post window
+    </div>
+
+
+    <div class="footer">
+        <button class="btn btn-primary btn-block " onclick="loadMore()">Load More</button>
     </div>
 
     <script src="js/bootstrap.min.js"></script>
