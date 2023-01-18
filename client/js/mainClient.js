@@ -11,7 +11,7 @@ class Post{
         this.poster = poster;
         this.title = title;
         this.imageLocation = imageLocation;
-        this.replies = 
+        this.replies = replies;
     }
 }
 
