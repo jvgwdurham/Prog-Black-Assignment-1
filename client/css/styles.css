@@ -45,19 +45,6 @@ nav{
     background-color:#3d4349
 }
 
-.loginFrame{
-    position: relative;
-    top: 20%;
-    left: 12%;
-}
-
-.logoImg{
-    margin-left: 15%;
-    object-fit: scale-down;
-    max-height: 10%;
-    max-width: 70%;
-}
-
 .postWindow{
     display: none;
     z-index: 998;
@@ -69,7 +56,20 @@ nav{
     width: 100%;
     height: 100%;
     margin-left: 20%;
-    background-color:#495057
+    background-color:#3d4349
+}
+
+.loginFrame{
+    position: relative;
+    top: 15%;
+    left: 12%;
+}
+
+.logoImg{
+    margin-left: 15%;
+    object-fit: scale-down;
+    max-height: 10%;
+    max-width: 70%;
 }
 
 .postContainer{

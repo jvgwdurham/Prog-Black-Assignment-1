@@ -2,38 +2,62 @@ var GLOBAL_postIndex = 0;
 var GLOBAL_username = "";
 var GLOBAL_loggedIn = false;
 
-class Replies{
-    Replies()
+if(getCookie("c_username").length > 0)
+{
+    document.getElementById("loginWindow").style.display = "none";
+    document.getElementById("username").innerHTML = getCookie("c_username");
 }
 
-class Post{
-    Post(poster,title, imageLocation, replies){
-        this.poster = poster;
-        this.title = title;
-        this.imageLocation = imageLocation;
-        this.replies = replies;
+function setCookie(cname, cvalue) {
+    document.cookie = cname + "=" + cvalue + ";" + "SameSite=None; Secure";
+  } // This code is pasted from w3 schools
+  
+  function getCookie(cname) {
+    let name = cname + "=";
+    let ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
     }
-}
+    return "";
+  } //so is this
+  
+
 
 document.addEventListener('click',function(event)
 {
     let postElem = document.getElementById("postWindow");
+    let postButton = document.getElementById("postButton");
     if(!postElem.contains(event.target))
     {
+        if(postButton.contains(event.target))
+        {
+            return
+        }
         postElem.style.display = "none";
     }
 });
 
-function logIn()
+function login()
 {
     let username = document.getElementById("usernameInput").value;
     let elem = document.getElementById("loginWindow");
     if(username == "" || username.length > 16)
     {
+        document.getElementById("errMsg").innerHTML = "Invalid Username";
         return false;
     }
     else
     {
+        if(document.getElementById("rememberMe").value == "on")
+        {
+            setCookie("c_username", username);
+        }
         GLOBAL_username = username;
         GLOBAL_loggedIn = true;
         document.getElementById("username").innerHTML = username;
@@ -81,17 +105,18 @@ function setupPost()
 {
     let elem = document.getElementById("loginWindow");
     let postElem = document.getElementById("postWindow");
-    if(elem.style.display == "block")
-    {
-        console.log("cant open post window")
-        return
-    }
     if(postElem.style.display == "none")
     {
-        console.log("here")
         document.getElementById("postWindow").style.display = "block";
     }
     console.log("clicked");
+}
+
+function changeImage(event)
+{
+    let img = document.getElementById("uploadimg")
+    img.src = URL.createObjectURL(event.target.files[0]);
+    console.log(document.getElementById("uploadimg").src);
 }
 
 function loadPost(id)
