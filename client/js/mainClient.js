@@ -4,13 +4,15 @@ var GLOBAL_loggedIn = false;
 
 if(getCookie("c_username").length > 0)
 {
+    let usrnametmp = getCookie("c_username");
     document.getElementById("loginWindow").style.display = "none";
-    document.getElementById("username").innerHTML = getCookie("c_username");
+    document.getElementById("username").innerHTML = usrnametmp;
+    GLOBAL_username = usrnametmp
 }
 
 function setCookie(cname, cvalue) {
     document.cookie = cname + "=" + cvalue + ";" + "SameSite=None; Secure";
-  } // This code is pasted from w3 schools
+  } // This code is modified from w3schools
   
   function getCookie(cname) {
     let name = cname + "=";
@@ -25,9 +27,7 @@ function setCookie(cname, cvalue) {
       }
     }
     return "";
-  } //so is this
-  
-
+  } //this is 100% pasted
 
 document.addEventListener('click',function(event)
 {
@@ -71,7 +71,6 @@ function logOut()
     GLOBAL_loggedIn = false
     document.getElementById("username").innerHTML = "Not Logged In"
     document.getElementById("loginWindow").style.display = "block";
-
 }
 
 
