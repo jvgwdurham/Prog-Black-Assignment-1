@@ -43,6 +43,32 @@ document.addEventListener('click',function(event)
     }
 });
 
+document.addEventListener("submit",function(event)
+{
+    console.log("starting post submission");
+    event.preventDefault();
+    const uploadImage = document.getElementById("attachment").files[0];
+    const postBody = document.getElementById("postBody").value;
+    var postIndex = 0;
+
+    const formData = new FormData();
+    formData.append('postImage', uploadImage);
+    formData.append('postBody',postBody);
+    formData.append('poster',GLOBAL_username);
+
+    fetch("http://127.0.0.1:8090/uploadPost", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        let post = '<div id="post'+ data["postIndex"]+'" onclick="loadPost(this.id)" class="postContainer text-center"><div class="imgBox"><img class="stdImg" src="http://127.0.0.1:8090/storage/post'+data["postIndex"]+'.jpg"></div><a href="#" onclick="loadPost(parent.id)" id="postTitle">'+postBody+'</a></div>\n'
+        document.getElementById("contentGrid").innerHTML += post
+    })
+    .catch(err => {console.log(err); return});
+
+});
+
 function login()
 {
     let username = document.getElementById("usernameInput").value;
@@ -104,18 +130,16 @@ function setupPost()
 {
     let elem = document.getElementById("loginWindow");
     let postElem = document.getElementById("postWindow");
-    if(postElem.style.display == "none")
+    if(elem.style.display == "none")
     {
-        document.getElementById("postWindow").style.display = "block";
+        postElem.style.display = "block";
     }
-    console.log("clicked");
 }
 
 function changeImage(event)
 {
     let img = document.getElementById("uploadimg")
     img.src = URL.createObjectURL(event.target.files[0]);
-    console.log(document.getElementById("uploadimg").src);
 }
 
 function loadPost(id)
