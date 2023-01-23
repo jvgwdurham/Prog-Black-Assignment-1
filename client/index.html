@@ -42,7 +42,7 @@
 
     <div class="container-fluid my-4">
         <div class="mainContent" id="contentGrid">
-            <div id="post1" class="postContainer text-center">
+            <div id="1" class="postContainer text-center">
                 <div class="imgBox">
                     <img class="stdImg" src="resources/placeholder.png">
                 </div>
@@ -65,8 +65,6 @@
                         <label class="form-check-label">Remember me</label>
                         <input class="form-check-input" type="checkbox" id="rememberMe" />
                     </div>
-
-
                 </div>
                 <button class="btn btn-primary btn-block my-2" onclick="login()">Enter</button>
                 <span class="text-center" id="errMsg"></span>
@@ -85,15 +83,55 @@
                 <input class="form-control" type="file" id="attachment" accept="image/png, image/jpeg, image/gif" onchange="changeImage(event)">
                 <img class="mt-3 stdImg" onerror="this.src='resources/placeholder.png'" id="uploadimg" src="">
                 <button class="btn btn-primary btn-block my-5" id="submitButton" type="submit">Post</button>
-                
             </form>
-
         </div>
     </div>
 
+    <div class="commentWindow", id="commentWindow">
+        <div class="w-75 loginFrame">
+            <img class="logoImg" src="resources/high res.png"> 
+            <div class="row">
+                <img id="postImg" class="mt-3 stdImg" src="resources/placeholder.png">
+                <label class="text-center mt-1" for="postImg">Post Title</label>
+            </div>
+            <div class="row mt-2">
+                <ul class="replyFrame">
+                    <li class="reply list-group-item list-group-item-dark">
+                        Comment 1
+                    </li>
+                    <li class="reply list-group-item list-group-item-dark">
+                        Comment 2
+                    </li>
+                    <li class="reply list-group-item list-group-item-dark">
+                        Comment 2
+                    </li>
+                    <li class="reply list-group-item list-group-item-dark">
+                        Comment 2
+                    </li>
+                    <li class="reply list-group-item list-group-item-dark">
+                        Comment 2
+                    </li>
+                    <li class="reply list-group-item list-group-item-dark">
+                        Comment 2
+                    </li>
+                    <li class="reply list-group-item list-group-item-dark">
+                        Comment 2
+                    </li>
+                    
+
+                </ul>
+                
+            </div>
+            <div class="row">
+                <textarea class="form-control mt-3"></textarea>
+                <button class="btn btn-primary btn-block mt-2" onclick="postComment()">Post Comment</button>
+            </div>
+            
+        </div>
+    </div>
 
     <div class="footer">
-        <button class="btn btn-primary btn-block " onclick="loadMore()">Load More</button>
+        <button class="btn btn-primary btn-block " onclick="loadMore()">Load Posts</button>
     </div>
 
     <script src="js/bootstrap.min.js"></script>

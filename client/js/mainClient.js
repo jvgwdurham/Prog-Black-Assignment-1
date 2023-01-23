@@ -62,7 +62,7 @@ document.addEventListener("submit",function(event)
     })
     .then(res => res.json())
     .then(data => {
-        let post = '<div id="post'+ data["postIndex"]+'" onclick="loadPost(this.id)" class="postContainer text-center"><div class="imgBox"><img class="stdImg" src="http://127.0.0.1:8090/storage/post'+data["postIndex"]+'.jpg"></div><a href="#" onclick="loadPost(parent.id)" id="postTitle">'+postBody+'</a></div>\n'
+        let post = '<div id="post'+ data["postIndex"]+'" onclick="loadPost(this.id)" class="postContainer text-center"><div class="imgBox"><img class="stdImg" src="http://127.0.0.1:8090/storage/post'+data["postIndex"]+'.jpg"></div><a href="#" onclick="loadPost(parent.id)" id="postTitle">'+postBody+'|R: 0|I: '+data["postIndex"]+'</a></div>\n'
         document.getElementById("contentGrid").innerHTML += post
     })
     .catch(err => {console.log(err); return});
