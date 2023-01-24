@@ -5,6 +5,7 @@
     <meta lang="en-us">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/bootstrap.css">
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>-->
     <style>
         body {
             background-color: #343a40;
@@ -41,12 +42,7 @@
 
     <div class="container-fluid my-4">
         <div class="mainContent" id="contentGrid">
-            <div id="0" onclick="loadPost(this.id)" class="postContainer text-center">
-                <div class="imgBox">
-                    <img class="stdImg" src="resources/placeholder.png">
-                </div>
-                <a href="#" id="postTitle">post | R: 3</a>
-            </div>
+
         </div>
     </div>
 
@@ -90,6 +86,7 @@
         <div class="w-75 loginFrame">
             <img class="logoImg" src="resources/high res.png"> 
             <div id="replyPostInfo" class="row">
+                <label id="poster"></label>
                 <img id="postImg" class="mt-3 stdImg" src="resources/placeholder.png">
                 <label id="p-0" class="text-center mt-1" for="postImg">Post Title</label>
             </div>
@@ -115,6 +112,7 @@
     <div class="footer">
         <button class="btn btn-primary btn-block" onclick="loadMore()">Load Posts</button>
         <button class="btn btn-primary btn-block" onclick="scrollUp()">Back to Top</button>
+        <button class="btn btn-primary btn-block" onclick="reloadPosts()">Reload Posts</button>
     </div>
 
     <script src="js/bootstrap.min.js"></script>

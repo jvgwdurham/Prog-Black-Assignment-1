@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
     {
         cb(null,"./client/storage/");
     },
-    filename: function(req,file,cb) //has to be synchronous to prevent 2 posts writing to postIndex.txt, although server OS should also handle this
+    filename: function(req,file,cb)
     {
         let index = getFirstLine("postIndex.txt");
         const filename = "post" + (parseInt(index)+1) + ".jpg";
@@ -171,7 +171,7 @@ app.post('/uploadPost',upload.single("postImage"),function(req,resp){
 });
 
 app.post('/addComment',function(req,resp){
-    try{post
+    try{
         let post = Post.readPostFromID(req.body["index"]);
         if(post instanceof Post)
         {
@@ -192,15 +192,35 @@ app.post('/addComment',function(req,resp){
     }
 });
 
-app.get('/getPosts/:startIndex&stopIndex',function(req,resp){ //will attempt to send max ammount, will send as many as possible
+app.get('/getPosts/:startIndex/:stopIndex',function(req,resp){ //will attempt to send max ammount, will send as many as possible
     try{
-        let startIndex = req.params.startIndex.parseInt();
-        let stopIndex = req.params.stopIndex.parseInt();
-        let finalIndex = getFirstLine("postIndex.txt");
+        let startIndex = parseInt(req.params.startIndex);
+        let stopIndex = parseInt(req.params.stopIndex);
+        let postCount = 0;
+        let finalIndex = parseInt(getFirstLine("postIndex.txt"));
         let retJs = {};
-        for(let i = startIndex; i <= stopIndex; i++){
+        console.log(startIndex, stopIndex, finalIndex);
+        if(startIndex > finalIndex)
+        {
+            console.log("start index too big");
+            resp.send({"postStatus":"No more posts found"})
+            return;
+        }
+        else if(startIndex > stopIndex)
+        {
+            console.log("user error");
+            resp.send({"postStatus":"$invalid-input"});
+            return;
+        }
+        else if(startIndex < 1)
+        {
+            console.log("no posts below this index");
+            resp.send({"postStatus":"$none-below"});
+            return;
+        }
+        for(var i = startIndex; i <= stopIndex; i++){
             let post = Post.readPostFromID(i);
-            if(post === "$not-found"){
+            if(post == "$not-found"){
                 if(stopIndex <= finalIndex)
                 {
                     stopIndex += 1;
@@ -209,9 +229,10 @@ app.get('/getPosts/:startIndex&stopIndex',function(req,resp){ //will attempt to 
             }
             else if(post instanceof Post)
             {
-                if(stopIndex <= finalIndex)
+                if(i <= finalIndex)
                 {
                     retJs["post"+i] = post.toJson();
+                    postCount += 1;
                 }
                 else{
                     continue;
@@ -220,9 +241,13 @@ app.get('/getPosts/:startIndex&stopIndex',function(req,resp){ //will attempt to 
         }
         if(Object.keys(retJs).length === 0)
         {
-            resp.send("$none-found");
+            resp.send({"postStatus":"$none-found"});
         }
-        resp.send(retJs);
+        else
+        {
+            retJs["postCount"] = postCount;
+            resp.send(retJs);
+        }
     }
     catch (error){
         console.log(error);

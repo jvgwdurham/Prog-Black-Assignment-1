@@ -120,7 +120,7 @@ class ClientPost{
 
     buildPostDOM()
     {
-        let postInfoString = '<img class="mt-3 stdImg" src="'+this.imageLocation+'">\n<label id="p-'+this.index+'" class="text-center mt-1">'+this.title+' |I: '+this.index+'</label>'
+        let postInfoString = '<label class="text-center" id="poster">Poster: '+this.poster+'</label>\n<img class="mt-3 stdImg" src="'+this.imageLocation+'">\n<label id="p-'+this.index+'" class="text-center mt-1">'+this.title+' |I: '+this.index+'</label>'
         let commentString = this.replies.buildReplyDOM();
 
         return {"postInfo":postInfoString, "commentString":commentString};
@@ -128,14 +128,17 @@ class ClientPost{
 }
 
 var GLOBAL = {
-    postIndex : 0,
+    postIndex : 1,
     username : "",
     loggedIn : false
 }
 
-function setCookie(cname, cvalue) {
-    document.cookie = cname + "=" + cvalue + ";" + "SameSite=None; Secure";
-} // This code is modified from w3schools
+function setCookie(cname, cvalue, exdays) {
+    const d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    let expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+} //code pasted from w3 schools. 
   
 function getCookie(cname) {
     let name = cname + "=";
@@ -150,17 +153,22 @@ function getCookie(cname) {
         }
     }
     return "";
-} //this is 100% pasted from w3schools
+} //this too
 
 window.addEventListener("load", function()
 {
-    if(getCookie("c_username").length > 0)
+    if(getCookie("c_username").length == 0)
     {
-        let usrnametmp = getCookie("c_username");
-        document.getElementById("loginWindow").style.display = "none";
-        document.getElementById("username").innerHTML = usrnametmp;
-        GLOBAL.username = usrnametmp
+        document.getElementById("loginWindow").style.display = "block";
     }
+    else{
+        let usrnametmp = getCookie("c_username");
+        document.getElementById("username").innerHTML = usrnametmp;
+        GLOBAL.username = usrnametmp;
+        GLOBAL.loggedIn = true;
+        loadMore(true)
+    }
+    
 })
 
 document.addEventListener('click',function(event)
@@ -180,6 +188,7 @@ document.addEventListener('click',function(event)
     if(!commentElem.contains(event.target))
     {
         commentElem.style.display = "none";
+        document.getElementById("commentBox").value = "";
     }
 });
 
@@ -219,10 +228,11 @@ document.getElementById("commentForm").addEventListener("submit",function(event)
     event.stopPropagation();
 
     console.log("starting comment submission");
-    let index = document.getElementById("replyPostInfo").children[1].id.split("-")[1]; //wtf
+    let index = document.getElementById("replyPostInfo").children[2].id.split("-")[1]; //wtf
     let comment = document.getElementById("commentBox").value;
 
     let formData = {"comment":comment,"commenter":GLOBAL.username,"index":index};
+    console.log(formData);
 
     fetch("http://127.0.0.1:8090/addComment", {
         method: "POST",
@@ -290,14 +300,16 @@ function login()
     }
     else
     {
-        if(document.getElementById("rememberMe").value == "on")
+        if(document.getElementById("rememberMe").checked)
         {
-            setCookie("c_username", username);
+            console.log("setting cookie")
+            setCookie("c_username", username, 7);
         }
         GLOBAL.username = username;
         GLOBAL.loggedIn = true;
         document.getElementById("username").innerHTML = username;
         elem.style.display = "none";
+        reloadPosts()
     }
 }
 
@@ -305,6 +317,7 @@ function logOut()
 {
     GLOBAL.username = "";
     GLOBAL.loggedIn = false
+    setCookie("c_username", "", -1);
     document.getElementById("username").innerHTML = "Not Logged In"
     document.getElementById("loginWindow").style.display = "block";
 }
@@ -327,22 +340,51 @@ function calcMaxPosts(firstLoad)
     return (hmax * 2) * wmax - 1
 }
 
-function loadMore()
+function loadMore(firstLoad = false)
 {
-    //let post = '<div id="post1" onclick="loadPost(this.id)" class="postContainer text-center"><div class="imgBox"><img class="stdImg" src="resources/placeholder.png"></div><span id="postTitle">post | R: 3</span></div>\n';
-    let maxPosts = calcMaxPosts(false);
-    console.log(maxPosts);
-    for(x = 0; x < maxPosts;x++)
-    {
-        document.getElementById("contentGrid").innerHTML += post
-    }
+    let maxPosts = calcMaxPosts(firstLoad);
+    let startIndex = GLOBAL.postIndex;
+    let stopIndex = GLOBAL.postIndex + maxPosts;
+
+    fetch("http://127.0.0.1:8090/getPosts/"+startIndex+"/"+stopIndex+"")
+    .then(res => res.json())
+    .then(data =>{
+        if(Object.keys(data).includes("postStatus")){
+            throw(data["postStatus"]);
+        }
+        else{
+            let postCount = data["postCount"];
+            delete data["postCount"];
+            for(let i = 1; i <= postCount; i++){
+                if(!Object.keys(data).includes("post"+i)){
+                    postCount += 1;
+                    continue;
+                }
+                let post = data["post"+i];
+                let replyCount = Object.keys(post.replies).length;
+                let postDiv = '<div id="'+post["postIndex"]+'" onclick="loadPost(this.id)" class="postContainer text-center"><div class="imgBox"><img class="stdImg" src="http://127.0.0.1:8090/storage/post'+post["postIndex"]+'.jpg"></div><a href="#" id="postTitle">'+post["title"]+'|R: '+replyCount+'|I: '+post["postIndex"]+'</a></div>\n'
+                document.getElementById("contentGrid").innerHTML += postDiv
+                
+            }
+            GLOBAL.postIndex += maxPosts + 1;
+        }
+    })
+    .catch(err =>{
+        if(err == "$none-found" && GLOBAL.postIndex == 1)
+        {
+            GLOBAL.postIndex += 1; //cheap check to bypass first post if its just about to be posted
+        }
+        console.log(err);
+        errorMessage(err);
+        return false;
+    });
 }
 
 function setupPost()
 {
     let elem = document.getElementById("loginWindow");
     let postElem = document.getElementById("postWindow");
-    if(elem.style.display == "none")
+    if(elem.style.display == "none" || elem.style.display == "")
     {
         postElem.style.display = "block";
     }
@@ -358,6 +400,13 @@ function scrollUp()
 {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0; //safari
+}
+
+function reloadPosts()
+{
+    document.getElementById("contentGrid").innerHTML = "";
+    GLOBAL.postIndex = 1;
+    loadMore(true);
 }
 
 function hideErrOverlay(id)
