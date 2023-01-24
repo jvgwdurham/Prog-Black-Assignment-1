@@ -28,6 +28,7 @@ const upload = multer({storage:storage});
 const app = express();
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static('client'));
+app.use(express.json());
 
 class Post{
     constructor(title, index, poster, replies = null)
@@ -52,7 +53,6 @@ class Post{
 
     static fromJson(json)
     {
-        console.log(json["replies"]);
         return new Post(json["title"], json["postIndex"], json["poster"], Replies.fromJson(json["replies"]));
     }
 
@@ -152,14 +152,12 @@ app.get('/serverStatus', function(req,resp){
         resp.send({"Server-Status":"1"});
     }
     catch(error){
-        next(console.log(error));
-    }
-    finally{
-        next(resp.send(500));
+        console.log(error);
+        resp.sendStatus(500);
     }
 })
 
-app.post('/uploadPost',upload.single("postImage"),function(req,resp,next){
+app.post('/uploadPost',upload.single("postImage"),function(req,resp){
     try{
         let index = getFirstLine("postIndex.txt");
         newPost = new Post(req.body["postBody"],index, req.body["poster"]);
@@ -167,32 +165,37 @@ app.post('/uploadPost',upload.single("postImage"),function(req,resp,next){
         resp.send({"postIndex":index.toString()});
     }
     catch (error){
-        next(console.log(error));
-    }
-    finally{
-        next(resp.send(500));
+        console.log(error)
+        resp.sendStatus(500);
     }
 });
 
-app.post('/addComment',function(req,resp,next){
-    try{
-        let post = readPostFromID(req.body["index"]);
-        post.addComment(Comment(req.body["commenter"],req.body["comment"]));
-        post.writeToFile();
-        resp.send({"CommentPostStatus":1})
+app.post('/addComment',function(req,resp){
+    try{post
+        let post = Post.readPostFromID(req.body["index"]);
+        if(post instanceof Post)
+        {
+            post.addComment(new Comment(req.body["commenter"],req.body["comment"]));
+            post.writeToFile();
+            let retJs = post.toJson()
+            resp.send(retJs) //let client redraw post
+        }
+        else
+        {
+            throw("Post not found");
+        }
+        
     }
     catch(error){
-        next(console.log(error));
-    }
-    finally{
-        next(resp.send(500));
+        console.log(error);
+        resp.sendStatus(500);
     }
 });
 
-app.get('/getPosts',function(req,resp,next){ //will attempt to send max ammount, will send as many as possible
+app.get('/getPosts/:startIndex&stopIndex',function(req,resp){ //will attempt to send max ammount, will send as many as possible
     try{
-        let startIndex = req.body["startIndex"].parseInt();
-        let stopIndex = req.body["stopIndex"].parseInt();
+        let startIndex = req.params.startIndex.parseInt();
+        let stopIndex = req.params.stopIndex.parseInt();
         let finalIndex = getFirstLine("postIndex.txt");
         let retJs = {};
         for(let i = startIndex; i <= stopIndex; i++){
@@ -215,7 +218,6 @@ app.get('/getPosts',function(req,resp,next){ //will attempt to send max ammount,
                 }
             }
         }
-        resp.send(retJs);
         if(Object.keys(retJs).length === 0)
         {
             resp.send("$none-found");
@@ -223,27 +225,31 @@ app.get('/getPosts',function(req,resp,next){ //will attempt to send max ammount,
         resp.send(retJs);
     }
     catch (error){
-        next(console.log(error));
-    }
-    finally{
-        next(resp.send(500));
+        console.log(error);
+        resp.sendStatus(500);
     }
 });
 
-app.get('/getPostByIndex',function(req,resp,next){
+app.get('/getPostByIndex/:index',function(req,resp){
     try{
-        let postAtIndex = Post.readPostFromID(req.body["index"]);
-        resp.send(postAtIndex.toJson()); 
+        let postAtIndex = Post.readPostFromID(req.params.index);
+        if(postAtIndex instanceof Post)
+        {
+            let retJs = postAtIndex.toJson()
+            resp.send(retJs);
+        }
+        else
+        {
+            throw("Post not found");
+        }
     }
     catch(error){
-        next(console.log(error));
-    }
-    finally{
-        next(resp.send(500));
+        console.log(error);
+        resp.sendStatus(500);
     }
 });
 
-app.options('/',function(req,resp,next){
+app.options('/',function(req,resp){
     try{
        resp.send(
         {
@@ -253,12 +259,9 @@ app.options('/',function(req,resp,next){
         }) 
     }
     catch(error){
-        next(console.log(error));
+        console.log(error);
+        resp.sendStatus(500);
     }
-    finally{
-        next(resp.send(500));
-    }
-    
 });
 
 app.listen(8090);
