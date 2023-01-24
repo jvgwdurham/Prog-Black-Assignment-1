@@ -2,12 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const multer = require("multer");
 const fs = require('fs');
-
-function getFirstLine(filename)
-{
-    const data = fs.readFileSync(filename,'utf8');
-    return data.split('\n').shift();
-}
+const utils = require("./utils");
+const postStructure = require("./postStructure");
 
 const storage = multer.diskStorage({ 
     destination: function(req,file,cb)
@@ -16,7 +12,7 @@ const storage = multer.diskStorage({
     },
     filename: function(req,file,cb)
     {
-        let index = getFirstLine("postIndex.txt");
+        let index = utils.getFirstLine("postIndex.txt");
         const filename = "post" + (parseInt(index)+1) + ".jpg";
         fs.writeFileSync("postIndex.txt", (parseInt(index) + 1).toString()); 
         cb(null,filename);
@@ -30,123 +26,6 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static('client'));
 app.use(express.json());
 
-class Post{
-    constructor(title, index, poster, replies = null)
-    {
-        this.title = title;
-        this.index = index;
-        this.imageLocation = "./storage/post" + this.index + ".jpg"; //for local use only
-        this.poster = poster;
-        if(replies == null){
-            this.replies = new Replies(this);
-        }
-        else{
-            this.replies = replies
-        }
-        
-    }
-
-    toJson()
-    {
-        return {"title":this.title, "postIndex":this.index, "imageLocation":this.imageLocation , "poster":this.poster, "replies":this.replies.toJson()};
-    }
-
-    static fromJson(json)
-    {
-        return new Post(json["title"], json["postIndex"], json["poster"], Replies.fromJson(json["replies"]));
-    }
-
-    writeToFile() //internal Storage, therefore ./client/posts
-    {
-        fs.writeFileSync("./client/posts/post"+this.index+".json", JSON.stringify(this.toJson()));
-    }
-
-    static readPostFromID(id)
-    {
-        try{
-            let data = fs.readFileSync("./client/posts/post"+ id + ".json")
-            return Post.fromJson(JSON.parse(data));
-        }
-        catch(error)
-        {
-            return "$not-found";
-        }
-        
-    }
-
-    addComment(comment)
-    {
-        if(!(comment instanceof Comment)){
-            console.error("Wrong type passed into this function, please add a Comment() object");
-            return;
-        }
-        this.replies.addComment(comment);
-    }
-}
-
-class Replies{
-    constructor()
-    {
-        this.commentArray = [];
-    }
-
-    addComment(comment)
-    {
-        this.commentArray.push(comment);
-    }
-
-    toJson()
-    {
-        let retJs = {}
-        if(this.commentArray.length == 0)
-        {
-            return retJs;
-        }
-        for(let i = 0; i < this.commentArray.length; i++)
-        {
-            retJs["comment"+i] = this.commentArray[i].toJson();
-        }
-        return retJs;
-    }
-
-    static fromJson(json)
-    {
-        let x = new Replies();
-        if(Object.keys(json).length === 0)
-        {
-            return x;
-        }
-        for(const [key, value] of Object.entries(json))
-        {
-            x.commentArray.push(Comment.fromJson(value));
-        }
-        return x;
-    }
-}
-
-class Comment{
-    constructor(commenter, comment){
-        this.commenter = commenter;
-        this.comment = comment;
-    }
-
-    toJson(){
-        return {"commenter" : this.commenter, "comment": this.comment};
-    }
-
-    static fromJson(json){
-        return new Comment(json["commenter"], json["comment"]);
-    }
-
-    getCommenter(){
-        return this.commenter;
-    }
-
-    getComment(){
-        return this.comment;
-    }
-}
-
 app.get('/serverStatus', function(req,resp){
     try{
         resp.send({"Server-Status":"1"});
@@ -159,8 +38,8 @@ app.get('/serverStatus', function(req,resp){
 
 app.post('/uploadPost',upload.single("postImage"),function(req,resp){
     try{
-        let index = getFirstLine("postIndex.txt");
-        newPost = new Post(req.body["postBody"],index, req.body["poster"]);
+        let index = utils.getFirstLine("postIndex.txt");
+        newPost = new postStructure.Post(req.body["postBody"],index, req.body["poster"]);
         newPost.writeToFile();
         resp.send({"postIndex":index.toString()});
     }
@@ -172,10 +51,10 @@ app.post('/uploadPost',upload.single("postImage"),function(req,resp){
 
 app.post('/addComment',function(req,resp){
     try{
-        let post = Post.readPostFromID(req.body["index"]);
-        if(post instanceof Post)
+        let post = postStructure.Post.readPostFromID(req.body["index"]);
+        if(post instanceof postStructure.Post)
         {
-            post.addComment(new Comment(req.body["commenter"],req.body["comment"]));
+            post.addComment(new postStructure.Comment(req.body["commenter"],req.body["comment"]));
             post.writeToFile();
             let retJs = post.toJson()
             resp.send(retJs) //let client redraw post
@@ -197,9 +76,8 @@ app.get('/getPosts/:startIndex/:stopIndex',function(req,resp){ //will attempt to
         let startIndex = parseInt(req.params.startIndex);
         let stopIndex = parseInt(req.params.stopIndex);
         let postCount = 0;
-        let finalIndex = parseInt(getFirstLine("postIndex.txt"));
+        let finalIndex = parseInt(utils.getFirstLine("postIndex.txt"));
         let retJs = {};
-        console.log(startIndex, stopIndex, finalIndex);
         if(startIndex > finalIndex)
         {
             console.log("start index too big");
@@ -219,7 +97,7 @@ app.get('/getPosts/:startIndex/:stopIndex',function(req,resp){ //will attempt to
             return;
         }
         for(var i = startIndex; i <= stopIndex; i++){
-            let post = Post.readPostFromID(i);
+            let post = postStructure.Post.readPostFromID(i);
             if(post == "$not-found"){
                 if(stopIndex <= finalIndex)
                 {
@@ -227,7 +105,7 @@ app.get('/getPosts/:startIndex/:stopIndex',function(req,resp){ //will attempt to
                     continue;
                 }
             }
-            else if(post instanceof Post)
+            else if(post instanceof postStructure.Post)
             {
                 if(i <= finalIndex)
                 {
@@ -257,8 +135,8 @@ app.get('/getPosts/:startIndex/:stopIndex',function(req,resp){ //will attempt to
 
 app.get('/getPostByIndex/:index',function(req,resp){
     try{
-        let postAtIndex = Post.readPostFromID(req.params.index);
-        if(postAtIndex instanceof Post)
+        let postAtIndex = postStructure.Post.readPostFromID(req.params.index);
+        if(postAtIndex instanceof postStructure.Post)
         {
             let retJs = postAtIndex.toJson()
             resp.send(retJs);
@@ -289,4 +167,5 @@ app.options('/',function(req,resp){
     }
 });
 
+utils.startUpValidation();
 app.listen(8090);
