@@ -18,7 +18,7 @@ window.addEventListener("load", function()
         document.getElementById("username").innerHTML = usrnametmp;
         GLOBAL.username = usrnametmp;
         GLOBAL.loggedIn = true;
-        //loadMore(true)
+        loadMore(true)
     }
     
 })

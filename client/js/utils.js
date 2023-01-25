@@ -30,8 +30,8 @@ function calcMaxPosts(firstLoad)
     const postHeight = 170;
     const postWidth = 256;
 
-    let hmax = Math.floor(h/postHeight);
-    let wmax = Math.floor(0.80*(w/postWidth));
+    let hmax = Math.floor(0.8*(h/postHeight));
+    let wmax = Math.floor(w/postWidth);
 
     if(firstLoad)
     {
@@ -39,3 +39,5 @@ function calcMaxPosts(firstLoad)
     }
     return (hmax * 2) * wmax - 1
 }
+
+module.exports = {calcMaxPosts, getCookie, setCookie};

@@ -127,3 +127,5 @@ class ClientPost{
         return {"postInfo":postInfoString, "commentString":commentString};
     }
 }
+
+module.exports = {ClientComment, ClientPost, ClientReplies};
