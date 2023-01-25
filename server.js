@@ -28,7 +28,7 @@ app.use(express.json());
 
 app.get('/serverStatus', function(req,resp){
     try{
-        resp.send({"Server-Status":"1"});
+        resp.send({"Server-Status":1});
     }
     catch(error){
         console.log(error);
@@ -61,7 +61,7 @@ app.post('/addComment',function(req,resp){
         }
         else
         {
-            throw("Post not found");
+            resp.send({"postStatus":"$not-found"});
         }
         
     }
@@ -143,7 +143,7 @@ app.get('/getPostByIndex/:index',function(req,resp){
         }
         else
         {
-            throw("Post not found");
+            resp.send({"postStatus":"$not-found"})
         }
     }
     catch(error){

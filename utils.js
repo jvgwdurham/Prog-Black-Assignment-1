@@ -21,8 +21,23 @@ function recoverPostIndex(folder)
     return maxVal
 }
 
+function checkDirStructure()
+{
+    if(!fs.existsSync("./client/storage/"))
+    {
+        fs.mkdirSync("./client/storage/",{recursive:true});
+        console.log("storage directory missing, remade dir");
+    }
+    if(!fs.existsSync("./client/posts"))
+    {
+        fs.mkdirSync("./client/posts/",{recursive:true});
+        console.log("posts directory missing, remade dir");
+    }
+}
+
 function startUpValidation()
 {
+    checkDirStructure();
     if(!fs.existsSync("postIndex.txt"))
     {
         fs.writeFileSync("postIndex.txt", recoverPostIndex("./client/storage/").toString());
@@ -31,4 +46,4 @@ function startUpValidation()
     console.log("server starting");
 }
 
-module.exports = {startUpValidation, recoverPostIndex, getFirstLine};
+module.exports = {startUpValidation, getFirstLine};
