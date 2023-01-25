@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 class ClientComment{
     constructor(commenter, comment){
         this.commenter = commenter;
@@ -68,7 +70,7 @@ class ClientReplies{
         {
             return x;
         }
-        for(const [key, value] of Object.entries(json))
+        for(const [, value] of Object.entries(json))
         {
             x.commentArray.push(ClientComment.fromJson(value));
         }

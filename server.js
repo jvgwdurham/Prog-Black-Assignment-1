@@ -39,7 +39,7 @@ app.get('/serverStatus', function(req,resp){
 app.post('/uploadPost',upload.single("postImage"),function(req,resp){
     try{
         let index = utils.getFirstLine("postIndex.txt");
-        newPost = new postStructure.Post(req.body["postBody"],index, req.body["poster"]);
+        let newPost = new postStructure.Post(req.body["postBody"],index, req.body["poster"]);
         newPost.writeToFile();
         resp.send({"postIndex":index.toString()});
     }

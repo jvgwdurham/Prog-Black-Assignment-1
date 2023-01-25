@@ -88,7 +88,7 @@ class Replies{
         {
             return x;
         }
-        for(const [key, value] of Object.entries(json))
+        for(const [, value] of Object.entries(json))
         {
             x.commentArray.push(Comment.fromJson(value));
         }

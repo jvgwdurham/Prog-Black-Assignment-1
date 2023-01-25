@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/*global ClientPost, ClientReplies, ClientComment, setCookie, getCookie, calcMaxPosts*/
+
 var GLOBAL = {
     postIndex : 1,
     username : "",
@@ -15,7 +18,7 @@ window.addEventListener("load", function()
         document.getElementById("username").innerHTML = usrnametmp;
         GLOBAL.username = usrnametmp;
         GLOBAL.loggedIn = true;
-        loadMore(true)
+        //loadMore(true)
     }
     
 })
@@ -93,7 +96,7 @@ document.getElementById("commentForm").addEventListener("submit",function(event)
         let post = ClientPost.fromJson(data);
         if(post instanceof ClientPost){
             console.log(post);
-            domInfo = post.buildPostDOM();
+            let domInfo = post.buildPostDOM();
             document.getElementById("replyPostInfo").innerHTML = domInfo["postInfo"];
             document.getElementById("replyList").innerHTML = domInfo["commentString"];
             return false;
@@ -121,7 +124,7 @@ function loadPost(id)
         if(post instanceof ClientPost)
         {
             console.log(post);
-            domInfo = post.buildPostDOM();
+            let domInfo = post.buildPostDOM();
             document.getElementById("replyPostInfo").innerHTML = domInfo["postInfo"];
             document.getElementById("replyList").innerHTML = domInfo["commentString"];
             document.getElementById("commentWindow").style.display = "block";
@@ -240,7 +243,7 @@ function reloadPosts()
     loadMore(true);
 }
 
-function hideErrOverlay(id)
+function hideOverlay(id)
 {
     let overlay = document.getElementById(id);
     overlay.style.display = "none";
@@ -250,4 +253,9 @@ function errorMessage(message)
 {
     document.getElementById("errMsg").innerText = message;
     document.getElementById("errorFrame").style.display = "block";
+}
+
+function openRules()
+{
+    document.getElementById("rulesWindow").style.display = "block";
 }

@@ -33,6 +33,9 @@
                     <button id="postButton" class="btn btn-secondary btn-block mx-1" onclick="setupPost()">Post</button>
                 </li>
                 <li class="nav-item active">
+                    <button id="rulesButton" class="btn btn-secondary btn-block mx-1" onclick="openRules()">Rules</button>
+                </li>
+                <li class="nav-item active">
                     <button class="btn btn-danger btn-block mx-1" onclick="logOut()">Log Out</button>
                 </li>
             </div>
@@ -101,10 +104,43 @@
         </div>
     </div>
 
-    <div id="errorFrame" class="errorFrame" onclick="hideErrOverlay(this.id)">
+    <div id="errorFrame" class="errorFrame" onclick="hideOverlay(this.id)">
         <div class="errorBox">
             <h6 class="text-center mt-3">An error has occured</h6>
             <p id="errMsg" class="text-center">replace me</p>
+        </div>
+    </div>
+
+    <div id="rulesWindow" class="rulesFrame text-center" onclick="hideOverlay(this.id)">
+        <div class="rulesBox">
+            <div>
+                <h1 class="mx-3 my-2 text-center">Welcome to λboard</h1>
+                <div class="text-center">
+                    <p1>
+                        An image forum for people interested about mathematics and computer science
+
+                    </p1>
+                    <br><br>
+                </div>
+            </div>
+            <div>
+                <h1 class="mx-3 my-2 text-center">Rules for λboard:</h1>
+                <ul class="mx-5 my-3 text-center">
+                    <li class="">
+                        Content and discussion about mathematics and computer science only
+                    </li>
+                    <li>
+                        Stay respectful to other users of the forum
+                    </li>
+                    <li>
+                        Pretend like there are more rules
+                    </li>
+                    <br>
+                </ol>
+            </div>
+            <div class="absoluteFooter">
+                All rights reserved
+            </div>  
         </div>
     </div>
 
