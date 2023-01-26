@@ -1,6 +1,5 @@
 const utils = require("./utils");
 const postStructure = require("./postStructure");
-const fs = require("fs");
 
 function serverStatus(req,resp){
     try{
@@ -14,8 +13,7 @@ function serverStatus(req,resp){
 
 function uploadPost(req,resp){
     try{
-        let index = parseInt(utils.getFirstLine("postIndex.txt")) + 1;
-        fs.writeFileSync("postIndex.txt", (index + 1).toString()); 
+        let index = parseInt(utils.getFirstLine("postIndex.txt"));
         let newPost = new postStructure.Post(req.body["postBody"],index, req.body["poster"]);
         newPost.writeToFile();
         resp.send({"postIndex":index.toString()});

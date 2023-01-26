@@ -1,8 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const multer = require("multer");
-const controllers = require("./controllers");
-const utils = require("./utils");
+const fs = require("fs");
+const controllers = require("./controllers.js");
+const utils = require("./utils.js");
 
 const storage = multer.diskStorage({ 
     destination: function(req,file,cb)
@@ -12,7 +13,10 @@ const storage = multer.diskStorage({
     filename: function(req,file,cb)
     {
         let index = utils.getFirstLine("postIndex.txt");
-        const filename = "post" + (parseInt(index)+1) + ".jpg";
+        console.log(index);
+        const filename = "post" + (parseInt(index) + 1) + ".jpg";
+        fs.writeFileSync("postIndex.txt", (parseInt(index) + 1).toString()); 
+        console.log("changed to:", utils.getFirstLine("postIndex.txt"))
         cb(null,filename);
     }
 }
