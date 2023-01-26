@@ -13,10 +13,8 @@ const storage = multer.diskStorage({
     filename: function(req,file,cb)
     {
         let index = utils.getFirstLine("postIndex.txt");
-        console.log(index);
         const filename = "post" + (parseInt(index) + 1) + ".jpg";
         fs.writeFileSync("postIndex.txt", (parseInt(index) + 1).toString()); 
-        console.log("changed to:", utils.getFirstLine("postIndex.txt"))
         cb(null,filename);
     }
 }
