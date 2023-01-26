@@ -4,6 +4,7 @@
   "description": "Main worksite for the first summative assessment for programming black.",
   "main": "server.js",
   "scripts": {
+    "preinstall": "node install.js",
     "pretest": "npx eslint .",
     "test": "npx jest --coverage",
     "start": "node server.js"

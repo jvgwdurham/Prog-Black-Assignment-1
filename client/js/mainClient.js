@@ -172,6 +172,7 @@ function logOut()
     setCookie("c_username", "", -1);
     document.getElementById("username").innerHTML = "Not Logged In"
     document.getElementById("loginWindow").style.display = "block";
+    unloadPosts();
 }
 
 function loadMore(firstLoad = false)
@@ -258,4 +259,9 @@ function errorMessage(message)
 function openRules()
 {
     document.getElementById("rulesWindow").style.display = "block";
+}
+
+function unloadPosts()
+{
+    document.getElementById("contentGrid").innerHTML = "";
 }

@@ -43,7 +43,6 @@ function startUpValidation()
         fs.writeFileSync("postIndex.txt", recoverPostIndex("./client/storage/").toString());
         console.log("postIndex file missing, created new file");
     }
-    console.log("server starting");
 }
 
 module.exports = {startUpValidation, getFirstLine};

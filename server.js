@@ -40,4 +40,5 @@ app.get('/getPostByIndex/:index', controllers.getPostByIndex);
 app.options('/', controllers.options);
 
 utils.startUpValidation();
+console.log("server starting");
 app.listen(8090);
