@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static('client'));
 app.use(express.json());
 
-app.get('/serverStatus', controllers.serverStatus)
+app.get('/serverStatus', controllers.serverStatus);
 
 app.post('/uploadPost',upload.single("postImage"), controllers.uploadPost);
 
