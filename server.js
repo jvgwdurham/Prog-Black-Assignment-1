@@ -3,8 +3,6 @@ const bodyParser = require("body-parser");
 const multer = require("multer");
 const controllers = require("./controllers");
 const utils = require("./utils");
-const fs = require('fs');
-
 
 const storage = multer.diskStorage({ 
     destination: function(req,file,cb)
@@ -15,7 +13,6 @@ const storage = multer.diskStorage({
     {
         let index = utils.getFirstLine("postIndex.txt");
         const filename = "post" + (parseInt(index)+1) + ".jpg";
-        fs.writeFileSync("postIndex.txt", (parseInt(index) + 1).toString()); 
         cb(null,filename);
     }
 }
